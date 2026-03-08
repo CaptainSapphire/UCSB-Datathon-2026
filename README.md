@@ -18,11 +18,11 @@ Looking at the male population, by looking at the average by year, the male weig
 <br>
 1. Do the foxes on different islands have the same weight? Is there an island where the foxes are significantly heavier than others? 
 Foxes on different islands do not have the same weight, as the SRI island has a wider range of weights based on the graph on lines 95-101. SRI has both lighter and heavier foxes
-<br>
-2. Do vaccinated foxes have a different weight compared to unvaccinated ones?
+<br><br>
+2. Do vaccinated foxes have a different weight compared to unvaccinated ones?<br>
 It looks like certain vaccines make the foxes thinner, as the graph on lines 104-109 shows there are fewer foxes who received their vaccinations that are on the heavier side.
-<br>
-3. The dataset has a variable called BodyCondition. What proportion of foxes are well nourished? Do some islands have a larger proportion of “fat” foxes than others? How does BodyCondition connect with Weight? For the latter, you could look into scatter plots.
+<br><br>
+3. The dataset has a variable called BodyCondition. What proportion of foxes are well nourished? Do some islands have a larger proportion of “fat” foxes than others? How does BodyCondition connect with Weight? <br>
 If we consider emaciated and thin as not well-nourished, then 0.4702593 are well nourished. With body condition and weight, the heavier the fox, the better the body condition/the more well nourished.
 
 
