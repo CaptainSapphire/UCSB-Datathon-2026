@@ -14,8 +14,9 @@ By looking at the average by year, we can find that the female weight has decrea
 <br>
 Looking at the male population, by looking at the average by year, the male weight has also decreased. In 2014, the average weight was 2.08, in 2015, the average was 1.95, and 1.99 in 2016, meaning an overall a loss of 0.09 kilograms. 
 <br><br>
-**Challenge Questions:**
-1. Do the foxes on different islands have the same weight? Is there an island where the foxes are significantly heavier than others? To conduct such analysis, you can filter by different Islands:
+**Challenge Questions**
+<br>
+1. Do the foxes on different islands have the same weight? Is there an island where the foxes are significantly heavier than others? 
 Foxes on different islands do not have the same weight, as the SRI island has a wider range of weights based on the graph on lines 95-101. SRI has both lighter and heavier foxes
 <br>
 2. Do vaccinated foxes have a different weight compared to unvaccinated ones?
