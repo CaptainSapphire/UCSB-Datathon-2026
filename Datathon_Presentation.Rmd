@@ -1,0 +1,155 @@
+---
+---
+---
+
+# Presentation
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+install.packages('knitr')
+library(knitr)
+# Might need to modify next line to load the file from the location where you downloaded it
+df <- read_csv("data_for_datathon_2014_2016.csv") # Loads the Data Set into the object df
+
+# Cleaning data
+df <- df |> mutate( # Will change the variables in the df data set
+  Vaccinations = case_when(is.na(Vaccinations) ~ "NV", .default = Vaccinations), # Reclassifies Missing Data in Vaccination as "N" per code book.
+  ReproductiveStatus = case_when(is.na(ReproductiveStatus) ~ "UN", .default = ReproductiveStatus), # Reclassifies Missing Data in Vaccination as "N" per code book.
+  BodyCondition = case_when( # Begins to modify BodyCondition
+    as.character(BodyCondition) == "1" ~ "emaciated", # Changes 1 to emaciated
+    as.character(BodyCondition) == "2" ~ "thin", # Changes 2 to thin
+    as.character(BodyCondition) == "3" ~ "healthy wild", # Changes 3 to healthy wild 
+    as.character(BodyCondition) == "4" ~ "extra fat reserves", # Changes 4 to Extra Fat Reserve
+    as.character(BodyCondition) == "5" ~ "extreme fat reserves" # Changes 5 to Extreme Fat Reserves
+  )
+)
+
+summary(df)
+
+df <- drop_na(df, AgeClass, Weight, BodyCondition) # Removes the missing values (NA) using the variables AgeClass, Weight, and BodyCondition
+
+nrow(df)
+
+mean_weight<-mean(df$Weight)
+sd_weight<-sd(df$Weight)
+mean_weight
+
+
+sd_weight #printing the values
+
+count_df <- table(df$Sex) # Using the 'Sex' variable from the `df` data set, we count the frequencies of each category with the table function and storing it in rs_df.
+count_df # Printing out the contents of "rs_df"
+prop.table(count_df) # Computing the Proportions of "rs_df"
+
+ggplot(df) + # Setting up the data to create a plot.
+  geom_bar(aes(Sex)) + # Creating a bar chart based on the variable "ReproductiveStatus" 
+  theme(axis.title = element_text(size = 14), axis.text = element_text(size = 14))
+
+
+ggplot(df, aes(x = Sex, y = Weight)) +
+  geom_boxplot(fill = "lightblue") +
+  labs(
+    title = "Boxplot of Weight by Sex",
+    x = "Sex",
+    y = "Weight"
+  ) + theme_minimal()
+
+
+weight_summary <- df %>%
+  group_by(Sex) %>%
+  summarise(
+    mean_weight = mean(Weight),
+    sd_weight = sd(Weight),
+    .groups = "drop"
+  )
+weight_summary
+
+
+weight_summary_yearly <- df %>%
+  group_by(Sex, SamplingYear) %>%
+  summarise(
+    mean_weight = mean(Weight, na.rm = TRUE),
+    sd_weight = sd(Weight, na.rm = TRUE),
+    .groups = "drop"
+  ) #group the data by Sex and Year and calculate mean and standard deviation of weight
+weight_summary_yearly
+
+ggplot(weight_summary_yearly, aes(x = SamplingYear, y = mean_weight)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = mean_weight - sd_weight,
+                    ymax = mean_weight + sd_weight), width = 0.2) +
+  facet_wrap(~ Sex) +
+  labs(
+    title = "Average Weight by Year and Sex",
+    y = "Mean Weight",
+    x = "Year"
+  )
+
+#Santa Rosa Fox population 
+
+SR_df<-filter(df,Island=="SRI")
+
+#San Miguel Fox population
+SM_df<-filter(df,Island=="SMI")
+```
+
+The fox weight has decreased over the span of 3 years.
+
+Some things to keep in mind when analyzing the fox weight, the majority of the foxes are male (53% to 47%, rounded), which means the weight will inherently run higher as the structure of a male is larger than a female.
+
+This can be seen with the graph on line 39-41. We can see how it effects the weight class by running lines 44-50. By using group_by, we can find that the average weight for females (1.88) kilograms is less than males, (1.99) kilograms.
+
+By looking at the average by year, we can find that the female weight has decreased, 2014, the average weight was 1.95, 2015, 1.85, and 1.86 in 2016, meaning overall a loss of 0.09 kilograms.
+
+Looking at the male population, by looking at the average by year, the male weight has also decreased. In 2014, the average weight was 2.08, in 2015, the average was 1.95, and 1.99 in 2016, meaning an overall a loss of 0.09 kilograms.
+
+**Challenge Questions: 1. Do the foxes on different islands have the same weight? Is there an island where the foxes are significantly heavier than others?**
+
+Foxes on different islands do not have the same weight, as the SRI island has a wider range of weights based on the graph on lines 95-101. SRI has both lighter and heavier foxes
+
+```{r}
+ggplot(df, aes(x = Sex, y = Weight, color = Sex)) +
+  geom_point() + 
+  facet_wrap(~Island) +
+  labs(title = "Sex vs Weight Across Different Islands",
+       x = "Sex",
+       y = "Weight",
+       color = "Sex")
+```
+
+**2.Do vaccinated foxes have a different weight compared to unvaccinated ones?** It looks like certain vaccines make the foxes thinner, as the graph on lines 104-109 shows there are fewer foxes who received their vaccinations that are on the heavier side.
+
+```{r}
+
+# Do vaccinated foxes have a different weight compared to unvaccinated ones? To answer this, study the relationship between Weight and Vaccinations
+ggplot(df, aes(x = Weight, y = Vaccinations, color = Vaccinations)) +
+  geom_jitter() + 
+  labs(title = "Vaccinations vs Weight Across Different Islands",
+       x = "Weight (Kilograms)",
+       y = "Vaccines",
+       color = "Vaccinations")
+```
+
+3\. **The dataset has a variable called BodyCondition. What proportion of foxes are well nourished? Do some islands have a larger proportion of “fat” foxes than others? How does BodyCondition connect with Weight? For the latter, you could look into scatter plots.** If we consider emaciated and thin as not well-nourished, then 0.4702593 are well nourished. With body condition and weight, the heavier the fox, the better the body condition/the more well nourished.
+
+```{r}
+
+#The dataset has a variable called BodyCondition. What proportion of foxes are well nourished? Do some islands have a larger proportion of “fat” foxes than others? How does BodyCondition connect with Weight? For the latter, you could look into scatter plots.
+
+# proportion overall
+body_df <- table(df$BodyCondition) 
+body_df 
+prop.table(body_df)
+well_nourished = 0.103202847 + 0.005592272 +  0.361464159 
+well_nourished
+
+# Body Condition and Weight
+ggplot(df, aes(x = Weight, y = BodyCondition, color=BodyCondition)) +
+  geom_point() + 
+  facet_wrap(~Island) +
+  labs(title = "BodyCondition versus Weight",
+       x = "Weight",
+       y = "Body Condition",
+       color ="Body Condition")
+```
